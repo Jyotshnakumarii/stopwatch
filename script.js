@@ -1,74 +1,109 @@
-var hr = 0;
-var min = 0;
-var sec = 0;
-var count = 0;
-var timer = false; // Timer decide true :start ;  false:stop
+const timerMilliSec = document.getElementById('timerMilliSec');
+const timerSec = document.getElementById('timerSec');
+const timerMins = document.getElementById('timerMins');
+const timerHrs = document.getElementById('timerHrs');
+const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
+const lapRecord = document.getElementById('lapRecord');
+
+let hours = 0;
+let minutes = 0;
+let seconds = 0;
+let miliseconds = 0;
+
+let displayMilisec = miliseconds;
+let displaySec = seconds;
+let displayMins = minutes;
+let displayHours = hours;
+
+let interval = null;
+
+let status = "stopped";
+
+let lapNow = null;
 
 function start() {
-    timer = true;
-    stopwatch();
+    miliseconds++;
+
+    // two digit number
+    if (miliseconds < 10) displayMilisec = "0" + miliseconds.toString();
+    else displayMilisec = miliseconds;
+
+    if (seconds < 10) displaySec = "0" + seconds.toString();
+    else displaySec = seconds;
+
+    if (minutes < 10) displayMins = "0" + minutes.toString();
+    else displayMins = minutes;
+
+    if (hours < 10) displayHours = "0" + hours.toString();
+    else displayHours = hours;
+
+    // mili-sec, sec-min, min-hour
+    if (miliseconds / 100 === 1) {
+        seconds++;
+        miliseconds = 0;
+
+        if (seconds / 60 === 1) {
+            minutes++;
+            seconds = 0;
+            miliseconds = 0;
+
+            if (minutes / 60 === 1) {
+                hours++;
+                minutes = 0;
+                seconds = 0;
+                miliseconds = 0;
+            }
+        }
+    }
+
+    timerMilliSec.innerHTML = displayMilisec;
+    timerSec.innerHTML = displaySec;
+    timerMins.innerHTML = displayMins;
+    timerHrs.innerHTML = displayHours;
 }
 
-function stop() {
-    timer = false;
+function startStop() {
+    if (status === "stopped") {
+        interval = setInterval(start, 10); // The setInterval() method continues calling the function until clearInterval() is called, or the window is closed.
+        startBtn.innerHTML = "Stop";
+        resetBtn.innerHTML = "Lap";
+        status = "started";
+    } else {
+        clearInterval(interval); // The clearInterval() method clears a timer set with the setInterval() method.
+        startBtn.innerHTML = "Start";
+        resetBtn.innerHTML = "Reset";
+        status = "stopped";
+    }
 }
 
 function reset() {
-    timer = false;
-
-    hr = 0;
-    min = 0;
-    sec = 0;
-    count = 0;
-
-    document.getElementById("hr").innerHTML = "00"; 
-    document.getElementById("min").innerHTML = "00";
-    document.getElementById("sec").innerHTML = "00";
-    document.getElementById("count").innerHTML = "00";
+    clearInterval(interval);
+    miliseconds = 0;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    timerMilliSec.innerHTML = "00";
+    timerSec.innerHTML = "00";
+    timerMins.innerHTML = "00";
+    timerHrs.innerHTML = "00";
+    startBtn.innerHTML = "Start";
+    lapRecord.innerHTML = '';
+    status = "stopped";
 }
 
-function stopwatch() {
-    if (timer == true) {
-        count = count + 1; //after 10 millisecond count value increases
-
-        if (count == 100) {   // count = 100 then second is increases by 1
-            sec = sec + 1;
-            count = 0;
-        }
-        if (sec == 60) {     // second = 60 then min is incre by 1
-            min = min + 1;
-            sec = 0;
-        }
-        if (min == 60) {    // min = 60 then hour is incre by 1
-            hr = hr + 1;
-            min = 0;
-            sec = 0;
-        }
-
-        // store the value in string
-        var hrString = hr;
-        var minString = min;
-        var secString = sec;
-        var countString = count;
-
-        if (hr < 10) {
-            hrString = "0" + hrString
-        }
-        if (min < 10) {
-            minString = "0" + minString
-        }
-        if (sec < 10) {
-            secString = "0" + secString
-        }
-        if (count < 10) {
-            countString = "0" + countString
-        }
-
-        document.getElementById("hr").innerHTML = hrString;
-        document.getElementById("min").innerHTML = minString;
-        document.getElementById("sec").innerHTML = secString;
-        document.getElementById("count").innerHTML = countString;
-
-        setTimeout("stopwatch()", 10); // setTimeout() method calls a function after a number of milliseconds.
+function lap() {
+    if (status === "started") {
+        lapNow = `<div class="lap">${displayHours} : ${displayMins} : ${displaySec} : ${displayMilisec}</div>`;
+        lapRecord.innerHTML += lapNow;
     }
 }
+
+startBtn.addEventListener('click', startStop);
+resetBtn.addEventListener('click', function () {
+    if (status === "started") {
+        lap();
+    } else {
+        reset();
+    }
+});

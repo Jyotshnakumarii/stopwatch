@@ -1,39 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
     <link rel="stylesheet" href="./style.css">
-    <title>Document</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="time">
+    <div class="wrapper" id="wrapper">
+        <div class="stopwatch">
             <h1>STOPWATCH</h1>
             <h1>VANILLA JAVASCRIPT STOPWATCH</h1>
-            <div class="span">
-                <span id="hr">00</span>
-                <span>:</span>
-                <span id="min">00</span>
-                <span>:</span>
-                <span id="sec">00</span>
-                <span>:</span>
-                <span id="count">00</span>
+            <div class="display">
+                <div id="timerHrs">00</div> :
+                <div id="timerMins">00</div> :
+                <div id="timerSec">00</div> :
+                <div id="timerMilliSec">00</div>
+                <br>
             </div>
             <div class="buttons">
-                <button id="start" onclick="start()">Start</button>
-                <button id="stop" onclick="stop()">Stop</button>
-                <button id="reset" onclick="reset()">Reset</button>
-
+                <button id="startBtn">Start</button>
+                <button id="resetBtn">Reset</button>
             </div>
+            <div id="lapRecord"></div>
         </div>
     </div>
-
-    <script src="./script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 
 </html>
